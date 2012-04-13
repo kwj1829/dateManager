@@ -36,8 +36,8 @@ public class mainActivity extends Activity{
 						this, "NewSchedule", testActivity.class)));
 		bar.addTab(bar.newTab()
 				.setIcon(R.drawable.search)
-				.setTabListener(new TabListener<testActivity>(
-						this, "SNS", testActivity.class)));
+				.setTabListener(new TabListener<areaSearchFrag>(
+						this, "Search", areaSearchFrag.class)));
 		bar.addTab(bar.newTab()
 				.setIcon(R.drawable.sns)
 				.setTabListener(new TabListener<testActivity>(
