@@ -20,6 +20,7 @@ import com.dm.R;
 import com.dm.content.tourapi.ctrl.TourApiParser;
 import com.dm.content.tourapi.data.unionData;
 import com.dm.content.tourapi.data.xmlData;
+import com.dm.ui.list.IconTextListAdapter;
 
 public class areaSearchFrag extends Fragment {
 	private View v;
@@ -28,7 +29,8 @@ public class areaSearchFrag extends Fragment {
 	private TourApiParser mXMLParser;
 	private ArrayList<xmlData> resultList;
 	private ListFragment myList;
-	private CustomAdapter testt;
+	private IconTextListAdapter adapter;
+	//private CustomAdapter testt;
 	private ProgressDialog dialog;
 
 	private final Handler handler = new Handler(){
@@ -37,16 +39,19 @@ public class areaSearchFrag extends Fragment {
 			resultList = mXMLParser.getXmlDataList();
 
 			myList = new ListFragment();
-
+			adapter = new IconTextListAdapter(getActivity());
+			
+			
 			System.out.println("now!");
-
-			testt = new CustomAdapter(getActivity(),R.layout.listitem, resultList); //adapter 持失
+			
+			
+			//testt = new CustomAdapter(getActivity(),R.layout.listitem, resultList); //adapter 持失
 			
 			unionData tmpData = (unionData)resultList.get(0);
 			
 			System.out.println(tmpData.getTitle());
 			
-			myList.setListAdapter(testt);
+			//myList.setListAdapter(testt);
 		}
 	};
 
