@@ -3,8 +3,9 @@ package com.dm.ui;
 import java.util.ArrayList;
 
 import android.app.Fragment;
-import android.app.ListFragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,7 +21,6 @@ import com.dm.R;
 import com.dm.content.tourapi.ctrl.TourApiParser;
 import com.dm.content.tourapi.data.unionData;
 import com.dm.content.tourapi.data.xmlData;
-import com.dm.ui.list.IconTextListAdapter;
 
 public class areaSearchFrag extends Fragment {
 	private View v;
@@ -28,30 +28,40 @@ public class areaSearchFrag extends Fragment {
 	private long mEndTime;
 	private TourApiParser mXMLParser;
 	private ArrayList<xmlData> resultList;
-	private ListFragment myList;
-	private IconTextListAdapter adapter;
-	//private CustomAdapter testt;
 	private ProgressDialog dialog;
 
 	private final Handler handler = new Handler(){
 		public void handleMessage(final Message msg){
 			dialog.dismiss();
 			resultList = mXMLParser.getXmlDataList();
-
-			myList = new ListFragment();
-			adapter = new IconTextListAdapter(getActivity());
-			
 			
 			System.out.println("now!");
 			
+			Intent intent = new Intent(getActivity(), tourApiView.class);
 			
-			//testt = new CustomAdapter(getActivity(),R.layout.listitem, resultList); //adapter 생성
+			int size = resultList.size();
+			intent.putExtra("size", size);
+			unionData tmpData = null;
+			String[] title = new String[size];
+			String[] imgUrl = new String[size];
+			int[] contentID = new int[size];
+			double[] mapX = new double[size];
+			double[] mapY = new double[size];
+			for(int i = 0; i < size; i++){
+				tmpData = (unionData)resultList.get(i);
+				title[i] = tmpData.getTitle();
+				imgUrl[i] = "";
+				contentID[i] = tmpData.getContentId();
+				mapX[i] = tmpData.getMap().getMapX();
+				mapY[i] = tmpData.getMap().getMapY();
+			}
+			intent.putExtra("contentID", contentID);
+			intent.putExtra("imgUrl", imgUrl);
+			intent.putExtra("title", title);
+			intent.putExtra("mapX", mapX);
+			intent.putExtra("mapY", mapY);
 			
-			unionData tmpData = (unionData)resultList.get(0);
-			
-			System.out.println(tmpData.getTitle());
-			
-			//myList.setListAdapter(testt);
+			startActivity(intent);
 		}
 	};
 
@@ -89,7 +99,7 @@ public class areaSearchFrag extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		v = inflater.inflate(R.layout.area_search, container, false);
-
+		
 		/* option process */
 
 		final EditText surSearchDis= (EditText)v.findViewById(R.id.surSearchDis);
@@ -103,10 +113,10 @@ public class areaSearchFrag extends Fragment {
 				
 				quarryStr[2] = "126.97860756362526"; //getGPSX();
 				quarryStr[3] = "37.569102135431045"; //getGPSY();
-				quarryStr[4] = surSearchDis.getText().toString();
 				quarryStr[5] = "12";//getContensType();
-
-				processQuery(quarryStr);
+				if((quarryStr[4] = surSearchDis.getText().toString()).equals(""))
+					System.out.println("거리를 입력하세요.");
+				else processQuery(quarryStr);
 			}
 		});
 
@@ -164,6 +174,7 @@ public class areaSearchFrag extends Fragment {
 				quarryStr[4] = "0";
 
 				processQuery(quarryStr);
+
 			}
 		});
 
@@ -250,4 +261,16 @@ public class areaSearchFrag extends Fragment {
 		thread.start();
 		dialog=ProgressDialog.show(getActivity(), "Loading..", "리스트를 불러옵니다",true,false);
 	}
+	
+	/*void addFragmentToStack() {        
+		Fragment newFragment = CountingFragment.newInstance();
+		
+		// Add the fragment to the activity, pushing this transaction        
+		// on to the back stack.        
+		FragmentTransaction ft = getFragmentManager().beginTransaction();        
+		ft.replace(R.id.simple_fragment, newFragment);        
+		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);        
+		ft.addToBackStack(null);        
+		ft.commit();
+	}*/
 }

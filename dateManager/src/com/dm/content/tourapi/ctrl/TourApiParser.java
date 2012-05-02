@@ -1754,7 +1754,6 @@ public class TourApiParser extends xmlParser implements Runnable{
 			Log.e("TourApiParser Thread", e.getMessage());
 			mHandler.sendEmptyMessage(1);
 		}
-
 		//System.out.println("complete.");
 	}
 }
